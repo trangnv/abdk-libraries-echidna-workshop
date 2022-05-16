@@ -2,8 +2,8 @@ import "ABDKMath64x64.sol";
 
 contract Test {
    using ABDKMath64x64 for int128;
-   int128 zero = ABDKMath64x64.fromInt(0);
-   int128 one = ABDKMath64x64.fromInt(1);
+   int128 internal zero = ABDKMath64x64.fromInt(0);
+   int128 internal one = ABDKMath64x64.fromInt(1);
  
    function add(int128 x, int128 y) public returns (int128) {
      return ABDKMath64x64.add(x, y);
