@@ -1,4 +1,4 @@
-# Fuzz tests for the ABDK Libraries using Echidna
+# Fuzz tests for the ABDK Math 64.64 library using Echidna
 
 This repository contains everything necessary to test expected properties of the *Math 64.64 library*. Users should complete the `Test` contract adding code with assertions.
 
@@ -37,13 +37,6 @@ Library of mathematical functions operating with signed 64.64-bit fixed point
 numbers.
 
 \[ [documentation](ABDKMath64x64.md) | [source](ABDKMath64x64.sol) \]
-
-### Math Quad
-
-Library of mathematical functions operating with IEEE 754 quadruple precision
-(128 bit) floating point numbers.
-
-\[ [documentation](ABDKMathQuad.md) | [source](ABDKMathQuad.sol) \]
 
 ## Copyright
 
