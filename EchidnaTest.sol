@@ -1,9 +1,13 @@
 import "ABDKMath64x64.sol";
 
 contract Test {
-   using ABDKMath64x64 for int128;
    int128 internal zero = ABDKMath64x64.fromInt(0);
    int128 internal one = ABDKMath64x64.fromInt(1);
+
+   event Value(string, int64);
+   function debug(string calldata x, int128 y) public {
+     emit Value(x, ABDKMath64x64.toInt(y));
+   }
  
    function add(int128 x, int128 y) public returns (int128) {
      return ABDKMath64x64.add(x, y);
@@ -31,6 +35,10 @@ contract Test {
 
    function inv(int128 x) public returns (int128) {
      return ABDKMath64x64.inv(x);
+   }
+
+   function sqrt(int128 x) public returns (int128) {
+     return ABDKMath64x64.sqrt(x);
    }
 
    function testAdd(int128 x, int128 y, int128 z) public {
