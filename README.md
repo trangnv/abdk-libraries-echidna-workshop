@@ -1,9 +1,20 @@
 # Fuzz tests for the ABDK Math 64.64 library using Echidna
 
+## Before starting
+
+Install Echidna 2.0.1:
+
+* Install/upgrade [slither](https://github.com/crytic/slither): `pip3 install slither-analyzer --upgrade`
+* Recommended option: [precompiled binaries](https://github.com/crytic/echidna/releases/tag/v2.0.1) (Linux and MacOS supported). 
+* Alternative option: [use docker](https://hub.docker.com/layers/echidna/trailofbits/echidna/v2.0.1/images/sha256-526df14f9a90ba5615816499844263e851d7f34ed241acbdd619eb7aa0bb8556?context=explore).
+
+## The contest
+
 This repository contains everything necessary to test expected properties of the *Math 64.64 library*. Users should complete the `Test` contract adding code with assertions.
 
 A few pointers to start:
 
+0. Read the documentation
 1. Think of basic arithmetic properties for every operation
 2. Consider when operation should or it should *not* revert
 3. Some properties could require to use certain tolerance
@@ -19,7 +30,7 @@ Additionally, from time to time, you should remove the corpus using `rm -Rf corp
 
 The recommended Solidity version for the fuzzing campaign is 0.8.1, however, more recent releases can be used as well.
 
-## Expected Result
+## Expected Results and Evaluation
 
 User should be able to fully test the *Math 64.64 library*. It is worth mentioning that the code is unmodified and there are no known issues. 
 If you find some security or correctness issue in the code do NOT post it in this repository nor upstream, since these are public messages.
