@@ -10,7 +10,7 @@ Install Echidna 2.0.1:
 
 ## The contest
 
-This repository contains everything necessary to test expected properties of the *Math 64.64 library*. Users should complete the `Test` contract adding code with assertions.
+This repository contains everything necessary to test expected properties of the *Math 64.64 library*. Users should complete the `Test` contract adding code with assertions creating functions to test different invariants from different mathematical operations (e.g. add, sub, etc).
 
 A few pointers to start:
 
