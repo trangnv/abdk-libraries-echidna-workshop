@@ -707,7 +707,7 @@ library ABDKMath64x64 {
         if (xl < lo) xh -= 1;
         xl -= lo; // We rely on overflow behavior here
 
-        assert (xh == hi >> 128);
+        require (xh == hi >> 128);
 
         result += xl / y;
       }
