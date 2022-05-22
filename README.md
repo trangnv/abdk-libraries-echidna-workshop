@@ -10,7 +10,7 @@ Install Echidna 2.0.1:
 
 ## The contest
 
-This repository contains everything necessary to test expected properties of the *Math 64.64 library*. Users should complete the `Test` creating functions to test different invariants from different mathematical operations (e.g. add, sub, etc) and adding assertions.
+This repository contains everything necessary to test expected properties of the *Math 64.64 library*. Users should complete the `Test` creating functions to test different invariants from different mathematical operations (e.g. add, sub, etc) and adding assertions. The developer marked two functions as `private` instead of `internal` (`sqrtu` and `divuu`) which we are NOT going to directly test. 
 
 A few pointers to start:
 
