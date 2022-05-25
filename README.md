@@ -49,6 +49,52 @@ numbers.
 
 \[ [documentation](ABDKMath64x64.md) | [source](ABDKMath64x64.sol) \]
 
+## Test file
+### Structure
+The tests are structurized as follow: (also commented in the Test.sol file)
+- Addition properties
+  - Associative:(x + y) + z = x +(y + z) ✅
+  - Commutative: x + y = y + x ✅
+  - Identity: x + 0 = x ✅
+  - Distributive, with multiplication involved: x * (y + z) =  x * y + x * z ❌
+
+- Subtraction properties
+  - Non-associative:(x - y) - z = x - (y - z) with z != 0 ✅
+  - Non-commutative: x - y != y - x with x != 0 || y!0 ✅
+  - Distributive, with multiplication involved: x * (y - z) =  x * y - x * z ❌
+
+- Multiplication properties
+  - Associative: (x * y) * z = x * (y * z) ❌
+  - Commutative: x * y = y * x ✅
+  - Identity: x * 1 = x ✅
+
+- Division properties
+  - Division by 1: x / 1 = x ✅
+  - Division by itself: x / x = 1 ✅
+  - Division of 0: 0 / x = 0 ✅
+
+- Negative and Absolute calculations ✅
+
+- Average
+  - Idempotency avg(x, x) = x ✅
+  - Commutative: avg(x, y) = avg(y, x) ✅
+  - Exchangable: avg(avg(x1,y1), avg(x2,y2)) = avg(avg(x1,x2), avg(y1,y2)) ❌
+
+- Power
+  - Product of powers: x ** y1 * x ** y2 = x ** (y1 + y2) ❗️
+  - 
+
+
+### Notes
+- Failed tests (marked ❌): I've yet to found the appropriate solutions to make them passed. Nevertheless it shows some insights of the code.
+  - Distributivity for both Addition and Subtraction; Associativity of Multiplication: all these relate to precision loss. 
+  - Exchangable of Average function: this one fails because of rounding down
+
+- Tests that need improvements (marked ❗️)
+  - Product of powers: `y1+y2` or `pow(x, y1+y2)` can be reverted and assert never be reached
+
+- Tests for other functions need to be written
+
 ## Copyright
 
 Copyright (c) 2019, [ABDK Consulting](https://abdk.consulting/)
