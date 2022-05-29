@@ -60,9 +60,9 @@ The tests are structurized as follow: (also commented in the Test.sol file)
   - Distributive, with multiplication involved: x * (y + z) =  x * y + x * z ✅
   Using try/catch:
     - First attemp: simply `assert (mul(x, add(y, z) == add (mul(x, y), mul(x, z)))` ❌
-
-    This one failed, e.g. with (-1,1,1)
-    Why? 
+    
+    This one failed, e.g. with (-1,1,1). Why? 
+    
       - mul(-1, add(1, 1) = mul(-1,2) yields -1
       - add (mul(-1, 1), mul(-1, 1))) = add(-1,-1) yields -2
     
