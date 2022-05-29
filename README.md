@@ -57,18 +57,12 @@ The tests are structurized as follow: (also commented in the Test.sol file)
   First I used try/catch but realize that inputs can be filtered to avoid expected revert, same applied for commutative and identity properties
   - Commutative: x + y = y + x ✅
   - Identity: x + 0 = x ✅
-  - Distributive, with multiplication involved: x * (y + z) =  x * y + x * z ✅
-  Using try/catch:
-    - First attemp: simply `assert (mul(x, add(y, z) == add (mul(x, y), mul(x, z)))` ❌
-    
-    This one failed, e.g. with (-1,1,1). Why? 
-    
+  - Distributive, with multiplication involved: `x * (y + z) =  x * y + x * z` using try/catch ✅
+    - First attemp: simply `assert (mul(x, add(y, z) == add (mul(x, y), mul(x, z)))`: This one failed, e.g. with (-1,1,1) as 
       - mul(-1, add(1, 1) = mul(-1,2) yields -1
       - add (mul(-1, 1), mul(-1, 1))) = add(-1,-1) yields -2
     
-    - Second attemp: add precision losses ✅
-
-    In the above example, precision loss is 100%!!! Let try with 100% tolerance (suggestion from Gustavo)
+    - Second attemp: add precision losses. In the above example, precision loss is 100%!!! Let try with 100% tolerance (suggestion from Gustavo)
       ```solidity
       r1 = mul(x, add(y, z);
       r2 = add (mul(x, y), mul(x, z)));
@@ -81,8 +75,6 @@ The tests are structurized as follow: (also commented in the Test.sol file)
       );
       ```
     I tried with `r1 * (1+ (1/2)) >= r2 >= r1 * (1- (1/2))` but actually not necessary as the above assertion passed already
-
-
 
 
 - Subtraction properties
