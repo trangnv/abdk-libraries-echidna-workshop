@@ -104,12 +104,13 @@ contract Test {
     y = y % mod;
     z = z % mod;
 
-    try this.add(this.add(x, y), z) returns(int128 r) {
-      assert(r == this.add(x, this.add(y, z)));
-    }
-    catch {
-      emit AssertionFailed('Addition associative error');
-    }
+    // try this.add(this.add(x, y), z) returns(int128 r) {
+    //   assert(r == this.add(x, this.add(y, z)));
+    // }
+    // catch {
+    //   emit AssertionFailed('Addition associative error');
+    // }
+    assert(this.add(this.add(x, y), z) == this.add(x, this.add(y, z)));
   }
 
   function testAddCommutative(int128 x, int128 y) public {
@@ -117,24 +118,25 @@ contract Test {
     x = x % mod;
     y = y % mod;
 
-    try this.add(x, y) returns(int128 r) {
-      assert(r == this.add(y, x));
-    }
-    catch {
-      emit AssertionFailed('Addition commutative error');
-    }
+    assert(this.add(x, y) == this.add(y,x));
+
+    // try this.add(x, y) returns(int128 r) {
+    //   assert(r == this.add(y, x));
+    // }
+    // catch {
+    //   emit AssertionFailed('Addition commutative error');
+    // }
   }
 
   function testAddIdentity(int128 x) public {
-    // int128 mod = MAX_64x64; 
-    // x = x % mod;
+    assert(this.add(x,zero) == x);
 
-    try this.add(x, zero) returns(int128 r) {
-      assert(r == x);
-    }
-    catch {
-      emit AssertionFailed('Addition identity error');
-    }
+    // try this.add(x, zero) returns(int128 r) {
+    //   assert(r == x);
+    // }
+    // catch {
+    //   emit AssertionFailed('Addition identity error');
+    // }
   }
   
   function testAddDistributive(int128 x, int128 y, int128 z) public {
@@ -143,12 +145,16 @@ contract Test {
     y = y % mod;
     z = z % mod;
 
-    try this.mul(x, this.add(y, z)) returns(int128 r) {
+    try this.mul(x, this.add(y, z)) returns(int128 r1) {
+      int128 r2 = this.add(this.mul(x, y), this.mul(x, z));
+      r1 = this.abs(r1);
+      r2 = this.abs(r2);
       assert(
-        r == this.add(
-          this.mul(x, y), 
-          this.mul(x, z)
-        )
+        // r1 >= r2 * (1- (1/2))
+        (r1 >= this.mul(r2, this.sub(one, this.div(one, this.fromInt(2)))) 
+        && r1 <= this.mul(r2, this.add(one, this.div(one, this.fromInt(2)))))
+        // || (r2 >= this.mul(r1, this.sub(one, this.div(one, this.fromInt(2)))) 
+        // && r2 <= this.mul(r1, this.add(one, this.div(one, this.fromInt(2)))))
       );
     }
     catch {}

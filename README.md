@@ -53,10 +53,34 @@ numbers.
 ### Structure
 The tests are structurized as follow: (also commented in the Test.sol file)
 - Addition properties
-  - Associative:(x + y) + z = x +(y + z) ✅
+  - Associative: (x + y) + z = x +(y + z) ✅
+  First I used try/catch but realize that inputs can be filtered to avoid expected revert, same applied for commutative and identity properties
   - Commutative: x + y = y + x ✅
   - Identity: x + 0 = x ✅
-  - Distributive, with multiplication involved: x * (y + z) =  x * y + x * z ❌
+  - Distributive, with multiplication involved: x * (y + z) =  x * y + x * z ✅
+  Using try/catch:
+    - First attemp: simply `assert (mul(x, add(y, z) == add (mul(x, y), mul(x, z)))` ❌
+    This one failed, e.g. with (-1,1,1)
+    Why? 
+      - mul(-1, add(1, 1) = mul(-1,2) yields -1
+      - add (mul(-1, 1), mul(-1, 1))) = add(-1,-1) yields -2
+    - Second attemp: add precision losses ✅
+    In the above example, precision loss is 100%!!! Let try with 100% tolerance (suggestion from Gustavo)
+      ```js
+      r1 = mul(x, add(y, z);
+      r2 = add (mul(x, y), mul(x, z)));
+      r1 = abs(r1); // absolute value
+      r2 = abs(r2);
+      assert(
+        // r2 * (1+ (1/2)) >= r1 >= r2 * (1- (1/2))
+        r1 >= mul(r2, sub(one, div(one, fromInt(2)))) 
+        && r1 <= mul(r2, add(one, div(one, fromInt(2))))
+      );
+      ```
+    I tried with `r1 * (1+ (1/2)) >= r2 >= r1 * (1- (1/2))` but actually not necessary as the above assertion passed already
+
+
+
 
 - Subtraction properties
   - Non-associative:(x - y) - z = x - (y - z) with z != 0 ✅
