@@ -53,15 +53,19 @@ numbers.
 The tests are structurized as follow, with `test.yaml` also has `filterFunctions` list for conveniently running set of function 
 
 #### Addition properties
-- Associative: (x + y) + z = x +(y + z) ✅
+- Associative: `(x + y) + z = x +(y + z)`
+- 
 First I used try/catch but realize that inputs can be filtered to avoid expected revert, same applied for commutative and identity properties
-- Commutative: x + y = y + x ✅
-- Identity: x + 0 = x ✅
-- Distributive, with multiplication involved: `x * (y + z) =  x * y + x * z` using try/catch ✅
-  - First attemp: simply `assert (mul(x, add(y, z) == add (mul(x, y), mul(x, z)))`: This one failed, e.g. with (-1,1,1) as
-    - mul(-1, add(1, 1) = mul(-1,2) yields -1
-    - add (mul(-1, 1), mul(-1, 1))) = add(-1,-1) yields -2
-  - Second attemp: add precision losses. In the above example, precision loss is 100%!!! Let try with 100% tolerance (suggestion from Gustavo)
+
+- Commutative: `x + y = y + x`
+
+- Identity: `x + 0 = x`
+
+- Distributive, with multiplication involved: `x * (y + z) =  x * y + x * z` using try/catch 
+  - First attemp: simply `assert (mul(x, add(y, z) == add (mul(x, y), mul(x, z)))`, this one failed, e.g. with (-1,1,1) as
+    - `mul(-1, add(1, 1) = mul(-1,2)` yields -1
+    - `add(mul(-1, 1), mul(-1, 1))) = add(-1,-1)` yields -2
+  - Second attemp: add precision losses. In the above example, precision loss is 100%!!! Tried with 100% tolerance *(suggestion from Gustavo)*
       ```solidity
       r1 = mul(x, add(y, z);
       r2 = add (mul(x, y), mul(x, z)));
@@ -73,50 +77,47 @@ First I used try/catch but realize that inputs can be filtered to avoid expected
         && r1 <= mul(r2, add(one, div(one, fromInt(2))))
       );
       ```
-    I tried with `r1 * (1+ (1/2)) >= r2 >= r1 * (1- (1/2))` but actually not necessary as the above assertion passed already
-  - There is another possibility: rounding that causes r1 != r2, so tried (one passed with `testLimit: 5000`)
+    Also tried with `r1 * (1+ (1/2)) >= r2 >= r1 * (1- (1/2))` (r2 floating around r1 instead of r1 floating around r2)
+  - There is another possibility: rounding that causes r1 != r2, so tried (this one passed with `testLimit: 5000`). This rounding assertion is applied for several other property tests below
       ```solidity
-      assert(
-        r1 >= sub(r2, one)
-        && r1 <= add(r2,one)
-      )        
+      assert(r1 >= sub(r2, one) && r1 <= add(r2,one))
       ```
 
 #### Subtraction properties
-- Non-associative:(x - y) - z = x - (y - z) with z != 0 
-- Non-commutative: x - y != y - x with x != 0 || y!0 
-- Distributive, with multiplication involved: x * (y - z) =  x * y - x * z with rounding accounted 
+- Non-associative: `(x - y) - z = x - (y - z)` with z != 0 
+- Non-commutative: `x - y != y - x` with x != 0 || y!0 
+- Distributive, with multiplication involved: `x * (y - z) =  x * y - x * z` with rounding accounted
 
 #### Multiplication properties
-- Associative: (x * y) * z = x * (y * z) with rounding accounted 
-- Commutative: x * y = y * x 
-- Identity: x * 1 = x 
+- Associative: `(x * y) * z = x * (y * z)` with rounding accounted 
+- Commutative: `x * y = y * x`
+- Identity: `x * 1 = x` 
 
 #### Division properties
-- Division by 1: x / 1 = x 
-- Division by itself: x / x = 1 
-- Division of 0: 0 / x = 0 
+- Division by 1: `x / 1 = x `
+- Division by itself: `x / x = 1 `
+- Division of 0: `0 / x = 0` 
 
 #### Negative and Absolute calculations 
 
 #### Average
-- Idempotency avg(x, x) = x 
-- Commutative: avg(x, y) = avg(y, x) 
-- Exchangable: avg(avg(x1,y1), avg(x2,y2)) = avg(avg(x1,x2), avg(y1,y2)) with rounding accounted 
+- Idempotency `avg(x, x) = x `
+- Commutative: `avg(x, y) = avg(y, x) `
+- Exchangable: `avg(avg(x1,y1), avg(x2,y2)) = avg(avg(x1,x2), avg(y1,y2))` with rounding accounted 
 
 #### Invert
-- x * inv(x) ~ 1 
+- `x * inv(x) ~ 1` 
 Theorically `x * inv(x) = 1` but in implementation this test has include precision loss, suggested by Gustavo
 
 #### Power
-- Product of powers: x ** y1 * x ** y2 = x ** (y1 + y2) with rounding accounted 
+- Product of powers: `x ** y1 * x ** y2 = x ** (y1 + y2)` with rounding accounted 
 
 #### Square root
 - `pow(sqrt(x), 2) = x` with precision loss / rounding accounted 
 
 #### log_2 and ln
-- log_2(x * y) = log_2(x) + log_2(y) with rounding accounted 
-- ln(x * y) = ln(x) + ln(y) with rounding accounted 
+- `log_2(x * y) = log_2(x) + log_2(y)` with rounding accounted 
+- `ln(x * y) = ln(x) + ln(y)` with rounding accounted 
 
 
 ## Copyright
