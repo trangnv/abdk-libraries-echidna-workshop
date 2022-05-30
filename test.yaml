@@ -1,0 +1,47 @@
+testMode: assertion
+testLimit: 5000
+filterBlacklist: false
+filterFunctions: [
+  # Addition
+  # "Test.testAddAssociative(int128,int128,int128)",
+  # "Test.testAddCommutative(int128,int128)",
+  # "Test.testAddIdentity(int128)",
+  # "Test.testAddDistributive(int128,int128,int128)",
+  
+  # Subtraction
+  # "Test.testSubNonAssociative(int128,int128,int128)",
+  # "Test.testSubNonCommutative(int128,int128)",
+  # "Test.testSubDistributive(int128,int128,int128)",
+
+  # Multiplication
+  # "Test.testMulAssociative(int128,int128,int128)",
+  # "Test.testMulCommutative(int128,int128)",
+  # "Test.testMulIdentity(int128)",
+
+  # Division
+  # "Test.testDivByOne(int128)",
+  # "Test.testDivByItself(int128)",
+  # "Test.testDivOfZero(int128)",
+
+  # Neg and Abs
+  # "Test.testNeg(int128)",
+  # "Test.testAbs(int128)",
+
+  # Average
+  # "Test.testAvgIdempotency(int128)",
+  # "Test.testAvgCommutative(int128,int128)",
+  # "Test.testAvgExchangeable(int128,int128,int128,int128)",
+
+  # Invert
+  # "Test.testInv(int128)",
+
+  # sqrt
+  # "Test.testSQRT(int128)",
+
+  # pow
+  "Test.testPowProduct(int128,uint256,uint256)",
+
+  # Log_2
+  # "Test.testLog2Commutative(int128,int128)",
+  # "Test.testLnCommutative(int128,int128)"
+]

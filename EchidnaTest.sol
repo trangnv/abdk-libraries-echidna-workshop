@@ -87,6 +87,22 @@ contract Test {
      return ABDKMath64x64.avg(x,y);
    }
 
+   function inv(int128 x) internal returns(int128) {
+     return ABDKMath64x64.inv(x);
+   }
+
+   function sqrt(int128 x) internal returns(int128) {
+     return ABDKMath64x64.sqrt(x);
+   }
+
+   function log_2(int128 x) internal returns(int128) {
+     return ABDKMath64x64.log_2(x);
+   }
+
+   function ln(int128 x) internal returns(int128) {
+     return ABDKMath64x64.ln(x);
+   }
+
   /* 
   TEST ADDITION PROPERTIES, including associative, commutative, identity, distributive
   - Associative property:(x + y) + z = x +(y + z)
@@ -110,7 +126,7 @@ contract Test {
     // catch {
     //   emit AssertionFailed('Addition associative error');
     // }
-    assert(this.add(this.add(x, y), z) == this.add(x, this.add(y, z)));
+    assert(add(add(x, y), z) == add(x, add(y, z)));
   }
 
   function testAddCommutative(int128 x, int128 y) public {
@@ -118,7 +134,7 @@ contract Test {
     x = x % mod;
     y = y % mod;
 
-    assert(this.add(x, y) == this.add(y,x));
+    assert(add(x, y) == add(y,x));
 
     // try this.add(x, y) returns(int128 r) {
     //   assert(r == this.add(y, x));
@@ -129,7 +145,7 @@ contract Test {
   }
 
   function testAddIdentity(int128 x) public {
-    assert(this.add(x,zero) == x);
+    assert(add(x,zero) == x);
 
     // try this.add(x, zero) returns(int128 r) {
     //   assert(r == x);
@@ -145,16 +161,16 @@ contract Test {
     y = y % mod;
     z = z % mod;
 
-    try this.mul(x, this.add(y, z)) returns(int128 r1) {
-      int128 r2 = this.add(this.mul(x, y), this.mul(x, z));
-      r1 = this.abs(r1);
-      r2 = this.abs(r2);
+    try this.mul(x, add(y, z)) returns(int128 r1) {
+      int128 r2 = add(mul(x, y), mul(x, z));
+      // r1 = this.abs(r1);
+      // r2 = this.abs(r2);
       assert(
         // r1 >= r2 * (1- (1/2))
-        (r1 >= this.mul(r2, this.sub(one, this.div(one, this.fromInt(2)))) 
-        && r1 <= this.mul(r2, this.add(one, this.div(one, this.fromInt(2)))))
-        // || (r2 >= this.mul(r1, this.sub(one, this.div(one, this.fromInt(2)))) 
-        // && r2 <= this.mul(r1, this.add(one, this.div(one, this.fromInt(2)))))
+        // (r1 >= mul(r2, sub(one, div(one, this.fromInt(2)))) 
+        // && r1 <= this.mul(r2, this.add(one, this.div(one, this.fromInt(2)))))
+        r1 >= sub(r2, one) &&
+        r1 <= add(r2,one)
       );
     }
     catch {}
@@ -169,29 +185,30 @@ contract Test {
 
   function testSubNonAssociative(int128 x, int128 y, int128 z) public {
     require(z!= zero );
-    try this.sub(this.sub(x, y), z) returns(int128 r) {
-      assert(r != this.sub(x, this.sub(y, z)));
+    try this.sub(sub(x, y), z) returns(int128 r) {
+      assert(r != sub(x, sub(y, z)));
     }
-    catch {
-    }
+    catch {}
   }
 
   function testSubNonCommutative(int128 x, int128 y) public {
     require(x != y);
     try this.sub(x, y) returns(int128 r) {
-      assert(r != this.sub(y, x));
+      assert(r != sub(y, x));
     }
     catch {}
   }
 
   function testSubDistributive(int128 x, int128 y, int128 z) public {
-    try this.mul(x, this.sub(y, z)) returns(int128 r) {
-      assert(
-        r == this.sub(
-          this.mul(x, y), 
-          this.mul(x, z)
-        )
-      );
+    try this.sub(y,z) returns(int128) {
+      try this.mul(x, sub(y, z)) returns(int128 r1) {
+        int128 r2 = sub( mul(x, y), mul(x, z));
+        assert(
+          ( r1 <= r2 && r1 >= sub(r2, one)) ||
+          ( r1 >= r2 && r1 <= add(r2, one))
+        );
+      }
+      catch{}
     }
     catch {}
   }
@@ -203,16 +220,22 @@ contract Test {
   */
 
   function testMulAssociative(int128 x, int128 y, int128 z) public {
-    try this.mul(this.mul(x, y), z) returns(int128 r) {
-      assert(r == this.mul(x, this.mul(y,z)));
+    try this.mul(x,y) returns(int128) {
+      try this.mul(mul(x, y), z) returns(int128 r1) {
+        int128 r2 = mul(x, mul(y,z));
+        assert(
+          ( r1 <= r2 && r1 >= sub(r2, one)) ||
+          ( r1 >= r2 && r1 <= add(r2, one))
+        );
+      }
+      catch {}
     }
-    catch {}
+    catch{}
   }
   
-
   function testMulCommutative(int128 x, int128 y) public {
     try this.mul(x, y) returns(int128 r) {
-      assert(r == this.mul(y, x));
+      assert(r == mul(y, x));
     }
     catch {}
 
@@ -267,7 +290,7 @@ contract Test {
 
   function testAbs(int128 x) public {
     try this.abs(x) returns(int128 r) {
-      assert(r == x || r == this.neg(x));
+      assert(r == x || r == neg(x));
     }
     catch {
       assert(x == MIN_64x64);
@@ -290,18 +313,80 @@ contract Test {
   function testAvgExchangeable(int128 x1, int128 x2, int128 y1, int128 y2) public {
     int128 r1 = avg(avg(x1,y1), avg(x2,y2));
     int128 r2 = avg(avg(x1,x2), avg(y1,y2));
-    assert(r1==r2);
+    assert(
+      (r1 >= r2 && r1 <= add(r2, one)) ||
+      (r1 <= r2 && r1 >= sub(r2, one))
+    );
   }
 
-  function testPowProduct(int128 x, uint256 y1, uint256 y2) public {
+  function testPowProduct(int128 x, uint256 y, uint256 z) public {
     /* This test need improvements
     - y1+y2 || pow(x, y1+y2) can be reverted and assert never be reached
     */
-    try this.pow(x, y1+y2) returns (int128 r) {
-      int128 tmp = this.mul(this.pow(x,y1), this.pow(x,y2));
-      assert(r == tmp);
+    try this.pow(x, y+z) returns (int128 r1) {
+      int128 r2 = mul(pow(x,y), pow(x,z));
+      assert(
+        (r1 >= r2 && r1 <= add(r2, one)) ||
+        (r1 <= r2 && r1 >= sub(r2, one))
+      );
     }
     catch {}
   }
+
+  /*
+  TEST INVERT
+  */
+  function testInv(int128 x) public {
+    require(x != 0);
+    try this.mul(x,inv(x)) returns (int128 r) {
+      assert(
+        r <= one && 
+        r >= sub(one, div(one, fromInt(3)))
+      );
+    }
+    catch {}
+  }
+
+  /*
+  TEST SQRT
+  */
+  function testSQRT(int128 x) public {
+    x = abs(x);
+    int128 sqrt_x = sqrt(x);
+    assert(
+      pow(sqrt_x, 2) <= x &&
+      // pow(sqrt_x, 2) >= mul(x, sub(one, div(one, fromInt(1000))))
+      pow(sqrt_x, 2) >= sub(x, one)
+    );
+  }
+
+  function testLog2Commutative(int128 x, int128 y) public {
+    x = abs(x);
+    y = abs(y);
+    try this.mul(x,y) returns(int128) {
+      int128 r1 = log_2(mul(x,y));
+      int128 r2 = add(log_2(x), log_2(y));
+      assert(
+        (r1 >= r2 && r1 <= add(r2, one)) ||
+        (r1 <= r2 && r1 >= sub(r2, one))
+      );
+    }
+    catch{}
+  }
+
+  function testLnCommutative(int128 x, int128 y) public {
+    x = abs(x);
+    y = abs(y);
+    try this.mul(x,y) returns(int128) {
+      int128 r1 = ln(mul(x,y));
+      int128 r2 = add(ln(x), ln(y));
+      assert(
+        (r1 >= r2 && r1 <= add(r2, one)) ||
+        (r1 <= r2 && r1 >= sub(r2, one))
+      );
+    }
+    catch{}
+  }
+
 
 }
