@@ -55,7 +55,7 @@ The tests are structurized as follow, with `test.yaml` also has `filterFunctions
 #### Addition properties
 - Associative: `(x + y) + z = x +(y + z)`
 
-First I used try/catch but realize that inputs can be filtered to avoid expected revert, same applied for commutative and identity properties
+  First I used try/catch but realize that inputs can be filtered to avoid expected revert, same applied for commutative and identity properties
 
 - Commutative: `x + y = y + x`
 
